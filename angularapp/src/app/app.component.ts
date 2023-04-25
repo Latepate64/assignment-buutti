@@ -7,15 +7,22 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public books?: Book[];
+  public books?: Book[] = [];
 
-  constructor(http: HttpClient) {
-    http.get<Book[]>('/book').subscribe(result => {
-      this.books = result;
+  constructor(private http: HttpClient) { }
+
+  ngOnInit(): void {
+    this.onScroll();
+  }
+
+  onScroll(): void {
+    this.http.get<Book[]>('/book', { params: { "page": this.page++ } }).subscribe(result => {
+      this.books?.push(...result);
     }, error => console.error(error));
   }
 
   title = 'angularapp';
+  page = 0;
 }
 
 interface Book {

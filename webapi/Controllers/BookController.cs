@@ -14,11 +14,12 @@ public class BookController : ControllerBase
     }
 
     [HttpGet(Name = "GetBooks")]
-    public IEnumerable<Book> Get()
+    public IEnumerable<Book> Get(int page)
     {
+        const int PageSize = 20;
         using SqliteDbContext dbContext = new();
         dbContext.Database.EnsureCreated();
-        List<Book> books = dbContext.Books.ToList();
+        List<Book> books = dbContext.Books.AsEnumerable().OrderByDescending(b => b.Timestamp).Take(new Range(new Index(page * PageSize), new Index((page + 1) * PageSize))).ToList();
         Console.WriteLine($"book count: {books.Count}");
         foreach (Book book in books)
         {
