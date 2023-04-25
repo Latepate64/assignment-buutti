@@ -21,5 +21,5 @@ export class AppComponent {
 interface Book {
   title: string;
   author: string;
-  dateAdded: string;
+  timestamp: string;
 }

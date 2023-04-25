@@ -16,11 +16,14 @@ public class BookController : ControllerBase
     [HttpGet(Name = "GetBooks")]
     public IEnumerable<Book> Get()
     {
-        return new List<Book>
+        using SqliteDbContext dbContext = new();
+        dbContext.Database.EnsureCreated();
+        List<Book> books = dbContext.Books.ToList();
+        Console.WriteLine($"book count: {books.Count}");
+        foreach (Book book in books)
         {
-            new Book("Viisasten kivi", "JK Rowling", new DateOnly(1996, 1, 1)),
-            new Book("LOTR", "Tolkien", new DateOnly(1950, 3, 10)),
-            new Book("Muumit", "Tove Janson", new DateOnly(1970, 11, 27)),
-        };
+            Console.WriteLine($"{book.Title} {book.Author} {book.Timestamp}");
+        }
+        return books;
     }
 }
