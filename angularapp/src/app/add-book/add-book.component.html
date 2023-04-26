@@ -5,3 +5,4 @@
   <input matInput placeholder="Author" [formControl]="authorControl">
 </mat-form-field>
 <button (click)="addBook()">Add</button>
+<p *ngIf="errorMsg"><em>{{errorMsg}}</em></p>

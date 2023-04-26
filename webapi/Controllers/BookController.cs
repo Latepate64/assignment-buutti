@@ -14,7 +14,7 @@ public class BookController : ControllerBase
     }
 
     [HttpGet(Name = "GetBooks")]
-    public IEnumerable<Book> Get(int page, int offset)
+    public IActionResult Get(int page, int offset)
     {
         using SqliteDbContext dbContext = new();
         dbContext.Database.EnsureCreated();
@@ -27,24 +27,27 @@ public class BookController : ControllerBase
         {
             Console.WriteLine($"{book.Title} {book.Author} {book.Timestamp}");
         }
-        return books;
+        return Ok(books);
     }
 
     [HttpPost(Name = "AddBook")]
-    public Book Add([FromBody] AddBookCommand command)
+    public IActionResult Add([FromBody] AddBookCommand command)
     {
         Console.WriteLine($"Add book: {command.Title} {command.Author}");
         if (string.IsNullOrEmpty(command.Title))
         {
-            throw new ArgumentNullException("title");
+            return BadRequest("Book title must be provided");
         }
         using SqliteDbContext dbContext = new();
         dbContext.Database.EnsureCreated();
-        Book book = new() { Title = command.Title, Author = command.Author, Timestamp = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") };
+        Book book = new() { 
+            Title = command.Title,
+            Author = !string.IsNullOrEmpty(command.Author) ? command.Author : null,
+            Timestamp = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") };
         dbContext.Books.Add(book);
         dbContext.SaveChanges();
-        Console.WriteLine($"Book added");
-        return book;
+        Console.WriteLine($"Book added: {book.Title} {book.Author} {book.Timestamp}");
+        return Ok(book);
     }
 
     private static DateTime? GetDateTime(string date)

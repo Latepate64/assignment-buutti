@@ -11,6 +11,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class AddBookComponent {
   titleControl = new UntypedFormControl('');
   authorControl = new UntypedFormControl('');
+  errorMsg = '';
 
   constructor(private http: HttpClient, private dialogRef: MatDialogRef<AddBookComponent>) { }
 
@@ -21,7 +22,7 @@ export class AddBookComponent {
     };
     this.http.post<Book>('/book', book).subscribe(result => {
       this.dialogRef.close(result);
-    }, error => console.error(error));
+    }, error => this.errorMsg = error.error);
   }
 }
 
