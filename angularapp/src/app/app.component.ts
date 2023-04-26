@@ -21,7 +21,7 @@ export class AppComponent {
   }
 
   onScroll(): void {
-    this.http.get<Book[]>('/book', { params: { "page": this.page++ } }).subscribe(result => {
+    this.http.get<Book[]>('/book', { params: { "page": this.page++, "offset": this.booksAdded } }).subscribe(result => {
       this.books?.push(...result);
     }, error => console.error(error));
   }
