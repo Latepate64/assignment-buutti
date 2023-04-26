@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { AddBookComponent } from './add-book/add-book.component';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +10,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   public books?: Book[] = [];
+  title = 'angularapp';
+  page = 0;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.onScroll();
@@ -21,8 +25,9 @@ export class AppComponent {
     }, error => console.error(error));
   }
 
-  title = 'angularapp';
-  page = 0;
+  addBook(): void {
+    this.dialog.open(AddBookComponent);
+  }
 }
 
 interface Book {

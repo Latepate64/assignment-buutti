@@ -18,10 +18,6 @@ namespace webapi
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Book>(entity =>
-            {
-                entity.HasNoKey();
-            });
             base.OnModelCreating(modelBuilder);
         }
     }
