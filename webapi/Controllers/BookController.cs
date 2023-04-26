@@ -16,10 +16,12 @@ public class BookController : ControllerBase
     [HttpGet(Name = "GetBooks")]
     public IEnumerable<Book> Get(int page)
     {
-        const int PageSize = 20;
         using SqliteDbContext dbContext = new();
         dbContext.Database.EnsureCreated();
-        List<Book> books = dbContext.Books.AsEnumerable().OrderByDescending(b => b.Timestamp).Take(new Range(new Index(page * PageSize), new Index((page + 1) * PageSize))).ToList();
+        List<Book> books = dbContext.Books.AsEnumerable()
+            .OrderByDescending(b => GetDateTime(b.Timestamp))
+            .Take(GetRangeForPage(page))
+            .ToList();
         //Console.WriteLine($"book count: {books.Count}");
         //foreach (Book book in books)
         //{
@@ -43,6 +45,17 @@ public class BookController : ControllerBase
         dbContext.SaveChanges();
         Console.WriteLine($"Book added");
         return book;
+    }
+
+    private static DateTime? GetDateTime(string date)
+    {
+        return DateTime.TryParse(date, out DateTime dt) ? dt : null;
+    }
+
+    private static Range GetRangeForPage(int page)
+    {
+        const int PageSize = 20;
+        return new Range(new Index(page * PageSize), new Index((page + 1) * PageSize));
     }
 }
 
