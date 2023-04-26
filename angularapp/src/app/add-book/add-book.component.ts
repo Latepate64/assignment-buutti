@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UntypedFormControl } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-book',
@@ -11,7 +12,7 @@ export class AddBookComponent {
   titleControl = new UntypedFormControl('');
   authorControl = new UntypedFormControl('');
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private dialogRef: MatDialogRef<AddBookComponent>) { }
 
   addBook(): void {
     const book: Book = {
@@ -19,7 +20,7 @@ export class AddBookComponent {
       Author: this.authorControl.value
     };
     this.http.post<Book>('/book', book).subscribe(result => {
-      //TODO close form
+      this.dialogRef.close(result);
     }, error => console.error(error));
   }
 }

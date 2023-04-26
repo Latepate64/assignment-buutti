@@ -12,6 +12,7 @@ export class AppComponent {
   public books?: Book[] = [];
   title = 'angularapp';
   page = 0;
+  booksAdded = 0;
 
   constructor(private http: HttpClient, private dialog: MatDialog) { }
 
@@ -26,7 +27,17 @@ export class AppComponent {
   }
 
   addBook(): void {
-    this.dialog.open(AddBookComponent);
+    let dialogRef = this.dialog.open(AddBookComponent);
+    dialogRef.afterClosed().subscribe(book => {
+      if (book) {
+        this.books?.unshift({
+          title: book.title,
+          author: book.author,
+          timestamp: book.timestamp
+        });
+        ++this.booksAdded;
+      }
+    });
   }
 }
 

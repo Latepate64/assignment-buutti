@@ -29,18 +29,20 @@ public class BookController : ControllerBase
     }
 
     [HttpPost(Name = "AddBook")]
-    public void Add([FromBody] AddBookCommand book)
+    public Book Add([FromBody] AddBookCommand command)
     {
-        Console.WriteLine($"Add book: {book.Title} {book.Author}");
-        if (string.IsNullOrEmpty(book.Title))
+        Console.WriteLine($"Add book: {command.Title} {command.Author}");
+        if (string.IsNullOrEmpty(command.Title))
         {
             throw new ArgumentNullException("title");
         }
         using SqliteDbContext dbContext = new();
         dbContext.Database.EnsureCreated();
-        dbContext.Books.Add(new Book { Title = book.Title, Author = book.Author, Timestamp = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") });
+        Book book = new() { Title = command.Title, Author = command.Author, Timestamp = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") };
+        dbContext.Books.Add(book);
         dbContext.SaveChanges();
         Console.WriteLine($"Book added");
+        return book;
     }
 }
 
