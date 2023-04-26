@@ -1,12 +1,13 @@
 <h1 id="tableLabel">Books</h1>
 <button (click)="addBook()">Add book</button>
+<p *ngIf="errorMsg"><em>An error occurred while loading books: {{errorMsg}}</em></p>
 <p *ngIf="!books"><em>Loading books...</em></p>
 
 <div
   *ngIf="books"
   infinite-scroll
   [infiniteScrollThrottle]="1000"
-  (scrolled)="onScroll()"
+  (scrolled)="getBooks()"
 >
   <mat-card *ngFor="let book of books">
     <mat-card-header>

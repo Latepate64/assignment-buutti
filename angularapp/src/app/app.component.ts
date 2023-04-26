@@ -13,17 +13,18 @@ export class AppComponent {
   title = 'angularapp';
   page = 0;
   booksAdded = 0;
+  errorMsg = '';
 
   constructor(private http: HttpClient, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.onScroll();
+    this.getBooks();
   }
 
-  onScroll(): void {
+  getBooks(): void {
     this.http.get<Book[]>('/book', { params: { "page": this.page++, "offset": this.booksAdded } }).subscribe(result => {
       this.books?.push(...result);
-    }, error => console.error(error));
+    }, error => this.errorMsg = error.error);
   }
 
   addBook(): void {

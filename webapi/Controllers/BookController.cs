@@ -16,38 +16,54 @@ public class BookController : ControllerBase
     [HttpGet(Name = "GetBooks")]
     public IActionResult Get(int page, int offset)
     {
-        using SqliteDbContext dbContext = new();
-        dbContext.Database.EnsureCreated();
-        List<Book> books = dbContext.Books.AsEnumerable()
-            .OrderByDescending(b => GetDateTime(b.Timestamp))
-            .Take(GetRangeForPage(page, offset))
-            .ToList();
-        Console.WriteLine($"book count: {books.Count}");
-        foreach (Book book in books)
+        try
         {
-            Console.WriteLine($"{book.Title} {book.Author} {book.Timestamp}");
+            using SqliteDbContext dbContext = new();
+            dbContext.Database.EnsureCreated();
+            List<Book> books = dbContext.Books.AsEnumerable()
+                .OrderByDescending(b => GetDateTime(b.Timestamp))
+                .Take(GetRangeForPage(page, offset))
+                .ToList();
+            Console.WriteLine($"book count: {books.Count}");
+            foreach (Book book in books)
+            {
+                Console.WriteLine($"{book.Title} {book.Author} {book.Timestamp}");
+            }
+            return Ok(books);
         }
-        return Ok(books);
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost(Name = "AddBook")]
     public IActionResult Add([FromBody] AddBookCommand command)
     {
-        Console.WriteLine($"Add book: {command.Title} {command.Author}");
-        if (string.IsNullOrEmpty(command.Title))
+        try
         {
-            return BadRequest("Book title must be provided");
+            Console.WriteLine($"Add book: {command.Title} {command.Author}");
+            if (string.IsNullOrEmpty(command.Title))
+            {
+                return BadRequest("Book title must be provided");
+            }
+            using SqliteDbContext dbContext = new();
+            dbContext.Database.EnsureCreated();
+            Book book = new()
+            {
+                Title = command.Title,
+                Author = !string.IsNullOrEmpty(command.Author) ? command.Author : null,
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
+            };
+            dbContext.Books.Add(book);
+            dbContext.SaveChanges();
+            Console.WriteLine($"Book added: {book.Title} {book.Author} {book.Timestamp}");
+            return Ok(book);
         }
-        using SqliteDbContext dbContext = new();
-        dbContext.Database.EnsureCreated();
-        Book book = new() { 
-            Title = command.Title,
-            Author = !string.IsNullOrEmpty(command.Author) ? command.Author : null,
-            Timestamp = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") };
-        dbContext.Books.Add(book);
-        dbContext.SaveChanges();
-        Console.WriteLine($"Book added: {book.Title} {book.Author} {book.Timestamp}");
-        return Ok(book);
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     private static DateTime? GetDateTime(string date)
