@@ -24,11 +24,6 @@ public class BookController : ControllerBase
                 .OrderByDescending(b => GetDateTime(b.Timestamp))
                 .Take(GetRangeForPage(page, offset))
                 .ToList();
-            Console.WriteLine($"book count: {books.Count}");
-            foreach (Book book in books)
-            {
-                Console.WriteLine($"{book.Title} {book.Author} {book.Timestamp}");
-            }
             return Ok(books);
         }
         catch (Exception ex)
@@ -42,7 +37,6 @@ public class BookController : ControllerBase
     {
         try
         {
-            Console.WriteLine($"Add book: {command.Title} {command.Author}");
             if (string.IsNullOrEmpty(command.Title))
             {
                 return BadRequest("Book title must be provided");
@@ -57,7 +51,6 @@ public class BookController : ControllerBase
             };
             dbContext.Books.Add(book);
             dbContext.SaveChanges();
-            Console.WriteLine($"Book added: {book.Title} {book.Author} {book.Timestamp}");
             return Ok(book);
         }
         catch (Exception ex)
