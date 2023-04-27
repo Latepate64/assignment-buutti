@@ -18,7 +18,7 @@ namespace webapi.Tests
         };
 
         [Fact]
-        public void Get_ValidParameters_ShouldPass()
+        public void Get_ValidParameters_ReturnBooks()
         {
             Mock<IBookService> bookService = new();
             bookService.Setup(x => x.GetBooks()).Returns(_books);
@@ -41,7 +41,7 @@ namespace webapi.Tests
         }
 
         [Fact]
-        public void Get_ServiceThrowsException_ShouldFail()
+        public void Get_ServiceThrowsException_ReturnBadRequest()
         {
             Mock<IBookService> bookService = new();
             string message = "This exception should be thrown";
@@ -51,6 +51,21 @@ namespace webapi.Tests
             IActionResult result = controller.Get(0, 0, 0);
 
             Assert.Equal(message, (result as BadRequestObjectResult).Value);
+        }
+
+        [Theory]
+        [InlineData("Aatu", "Tarina")]
+        [InlineData(null, "Tarina")]
+        [InlineData("Aatu", null)]
+        public void Add_ValidParameters_ReturnBook(string author, string title)
+        {
+            BookController controller = new(Mock.Of<IBookService>());
+            AddBookCommand command = new() { Author = author, Title = title };
+
+            IActionResult result = controller.Add(command);
+
+            Book book = (result as OkObjectResult).Value as Book;
+            Assert.Equal(new Book { Author = author, Title = title, Timestamp = book.Timestamp }, book);
         }
     }
 }
