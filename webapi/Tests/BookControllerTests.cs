@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using webapi.Controllers;
 using Xunit;
@@ -9,6 +10,8 @@ namespace webapi.Tests
     {
         private readonly List<Book> _books = new()
         {
+            new Book { Author = "Mikko", Timestamp = "1980", Title = "Eepos" },
+            new Book { Author = "Ismo", Timestamp = "1990", Title = "Runo" },
             new Book { Author = "Aatu", Timestamp = "2000", Title = "Tarina" },
             new Book { Author = "Seppo", Timestamp = "2010", Title = "Loru" },
             new Book { Author = "Teemu", Timestamp = "2020", Title = "Satu" },
@@ -21,9 +24,33 @@ namespace webapi.Tests
             bookService.Setup(x => x.GetBooks()).Returns(_books);
             BookController controller = new(bookService.Object);
 
-            List<Book>? books = (controller.Get(0, 0) as OkObjectResult).Value as List<Book>;
+            int iterations = _books.Count + 1;
+            for (int page = 0; page < iterations; ++page)
+            {
+                for (int offset = 0; offset < iterations; ++offset)
+                {
+                    for (int pageSize = 0; pageSize < iterations; ++pageSize)
+                    {
+                        List<Book>? books = (controller.Get(page, offset, pageSize) as OkObjectResult).Value as List<Book>;
 
-            Assert.Equal(_books, books);
+                        System.Range range = new System.Range(new Index(page * pageSize + offset), new Index((page + 1) * pageSize + offset));
+                        Assert.Equal(_books.Take(range), books);
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void Get_ServiceThrowsException_ShouldFail()
+        {
+            Mock<IBookService> bookService = new();
+            string message = "This exception should be thrown";
+            bookService.Setup(x => x.GetBooks()).Throws(new Exception(message));
+            BookController controller = new(bookService.Object);
+
+            IActionResult result = controller.Get(0, 0, 0);
+
+            Assert.Equal(message, (result as BadRequestObjectResult).Value);
         }
     }
 }

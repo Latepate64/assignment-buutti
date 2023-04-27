@@ -14,13 +14,13 @@ public class BookController : ControllerBase
     }
 
     [HttpGet(Name = "GetBooks")]
-    public IActionResult Get(int page, int offset)
+    public IActionResult Get(int page, int offset, int pageSize = 20)
     {
         try
         {
             List<Book> books = _bookService.GetBooks()
                 .OrderByDescending(b => GetDateTime(b.Timestamp))
-                .Take(GetRangeForPage(page, offset))
+                .Take(GetRangeForPage(page, offset, pageSize))
                 .ToList();
             return Ok(books);
         }
@@ -59,10 +59,9 @@ public class BookController : ControllerBase
         return DateTime.TryParse(date, out DateTime dt) ? dt : null;
     }
 
-    private static Range GetRangeForPage(int page, int offset)
+    private static Range GetRangeForPage(int page, int offset, int pageSize)
     {
-        const int PageSize = 20;
-        return new Range(new Index(page * PageSize + offset), new Index((page + 1) * PageSize + offset));
+        return new Range(new Index(page * pageSize + offset), new Index((page + 1) * pageSize + offset));
     }
 }
 
