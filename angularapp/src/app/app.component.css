@@ -1,0 +1,40 @@
+body {
+  background-color: seashell;
+}
+
+h1 {
+  display: block;
+  font-size: 10vh;
+  font-weight: bold;
+  margin: auto;
+  padding: 15vh;
+  text-align: center;
+  top: 50px;
+  width: 50%;
+}
+
+button {
+  background-color: aquamarine;
+  border-radius: 50px;
+  bottom: 10px;
+  box-shadow: 2px 2px 3px #999;
+  color: black;
+  font-size: 5vh;
+  height: 13vh;
+  position: fixed;
+  right: 10px;
+  text-align: center;
+  width: 39vw;
+}
+
+mat-card {
+  background-color: lightgoldenrodyellow;
+}
+
+mat-card-title {
+    color: black
+}
+
+mat-card-subtitle {
+  color: black
+}

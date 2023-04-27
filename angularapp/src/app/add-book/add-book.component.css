@@ -1,0 +1,20 @@
+button {
+  background-color: aquamarine;
+  border-radius: 10px;
+  box-shadow: 2px 2px 3px #999;
+  color: black;
+  display: block;
+  font-size: 2vh;
+  height: 50px;
+  margin: auto;
+  text-align: center;
+  width: 100px;
+}
+
+p {
+  text-align: center;
+}
+
+div {
+  background-color: cyan;
+}

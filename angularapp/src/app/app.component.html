@@ -1,21 +1,22 @@
-<h1 id="tableLabel">Books</h1>
-<button (click)="addBook()">Add book</button>
-<p *ngIf="errorMsg"><em>An error occurred while loading books: {{errorMsg}}</em></p>
-<p *ngIf="!books"><em>Loading books...</em></p>
+<body>
+  <h1 id="tableLabel">Books</h1>
 
-<div
-  *ngIf="books"
-  infinite-scroll
-  [infiniteScrollThrottle]="1000"
-  (scrolled)="getBooks()"
->
-  <mat-card *ngFor="let book of books">
-    <mat-card-header>
-      <div>
-        <mat-card-title>{{ book.title }}</mat-card-title>
-        <mat-card-subtitle>{{ book.author }}</mat-card-subtitle>
-        <mat-card-subtitle>{{ book.timestamp }}</mat-card-subtitle>
-      </div>
-    </mat-card-header>
-  </mat-card>
-</div>
+  <p *ngIf="errorMsg"><em>An error occurred while loading books: {{errorMsg}}</em></p>
+  <p *ngIf="!books"><em>Loading books...</em></p>
+
+  <div *ngIf="books"
+       infinite-scroll
+       [infiniteScrollThrottle]="1000"
+       (scrolled)="getBooks()">
+    <mat-card *ngFor="let book of books">
+      <mat-card-header>
+        <div>
+          <mat-card-title>{{ book.title }}</mat-card-title>
+          <mat-card-subtitle>{{ book.author }}</mat-card-subtitle>
+          <mat-card-subtitle>Added {{ book.timestamp }}</mat-card-subtitle>
+        </div>
+      </mat-card-header>
+    </mat-card>
+  </div>
+  <button (click)="addBook()">Add book</button>
+</body>
