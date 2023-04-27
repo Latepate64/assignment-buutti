@@ -6,11 +6,11 @@ namespace webapi.Controllers;
 [Route("[controller]")]
 public class BookController : ControllerBase
 {
-    private readonly ILogger<BookController> _logger;
+    private readonly IBookService _bookService;
 
-    public BookController(ILogger<BookController> logger)
+    public BookController(IBookService bookService)
     {
-        _logger = logger;
+        _bookService = bookService;
     }
 
     [HttpGet(Name = "GetBooks")]
@@ -18,9 +18,7 @@ public class BookController : ControllerBase
     {
         try
         {
-            using SqliteDbContext dbContext = new();
-            dbContext.Database.EnsureCreated();
-            List<Book> books = dbContext.Books.AsEnumerable()
+            List<Book> books = _bookService.GetBooks()
                 .OrderByDescending(b => GetDateTime(b.Timestamp))
                 .Take(GetRangeForPage(page, offset))
                 .ToList();
@@ -41,16 +39,13 @@ public class BookController : ControllerBase
             {
                 return BadRequest("Book title must be provided");
             }
-            using SqliteDbContext dbContext = new();
-            dbContext.Database.EnsureCreated();
             Book book = new()
             {
                 Title = command.Title,
                 Author = !string.IsNullOrEmpty(command.Author) ? command.Author : null,
                 Timestamp = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
             };
-            dbContext.Books.Add(book);
-            dbContext.SaveChanges();
+            _bookService.AddBook(book);
             return Ok(book);
         }
         catch (Exception ex)
