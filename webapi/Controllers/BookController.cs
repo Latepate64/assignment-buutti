@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using webapi.Models;
+using webapi.Services;
 
 namespace webapi.Controllers;
 
@@ -63,10 +65,4 @@ public class BookController : ControllerBase
     {
         return new Range(new Index(page * pageSize + offset), new Index((page + 1) * pageSize + offset));
     }
-}
-
-public class AddBookCommand
-{
-    public string Title { get; set; }
-    public string Author { get; set; }
 }
