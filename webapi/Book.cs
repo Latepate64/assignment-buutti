@@ -26,4 +26,9 @@ public class Book : IEquatable<Book>
     {
         return HashCode.Combine(Title, Author, Timestamp);
     }
+
+    public override string ToString()
+    {
+        return $"{Title} {Author} {Timestamp}";
+    }
 }
