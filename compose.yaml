@@ -1,0 +1,9 @@
+services:
+  angularapp:
+    build: angularapp
+    ports:
+      - "4200:80"
+  webapi:
+    build: webapi
+    ports:
+      - "5195:80"

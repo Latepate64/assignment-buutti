@@ -1,18 +1,18 @@
 # buutti-assignment
 
 ## Prerequisites
-[Download .NET](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-7.0.203-windows-x64-installer)
+[Download and install Docker](https://www.docker.com/)
 
 ## Building the solution
 Execute the following command at the command line:
 ```
-dotnet build
+docker compose build
 ```
 
 ## Starting the application
 Execute the following command at the command line:
 ```
-execute
+docker compose up
 ```
 
 Then the application should run on http://localhost:4200/
