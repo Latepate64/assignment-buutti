@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
+import { MatDialogModule } from '@angular/material/dialog';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -7,6 +10,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      imports: [HttpClientModule, MatDialogModule, InfiniteScrollModule]
     }).compileComponents();
   });
 
@@ -16,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'angularapp'`, () => {
+  it(`should not have books added`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('angularapp');
+    expect(app.booksAdded).toEqual(0);
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('angularapp app is running!');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Books');
   });
 });
