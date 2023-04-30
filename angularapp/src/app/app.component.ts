@@ -10,7 +10,6 @@ import { AddBookComponent } from './add-book/add-book.component';
 })
 export class AppComponent {
   public books?: Book[] = [];
-  title = 'angularapp';
   page = 0;
   booksAdded = 0;
   errorMsg = '';
